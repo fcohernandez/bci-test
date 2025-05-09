@@ -1,0 +1,35 @@
+<form class="dialog-content" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <h1 mat-dialog-title>Agregar personaje</h1>
+  <div mat-dialog-content *ngIf="data">
+    <p>{{ data.name }}</p>
+  </div>
+  <mat-form-field>
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" />
+    <mat-error *ngIf="form.get('name')?.hasError('required')">
+      El nombre es obligatorio
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Descripción</mat-label>
+    <textarea
+      matInput
+      formControlName="description"
+      cdkTextareaAutosize
+      #autosize="cdkTextareaAutosize"
+      cdkAutosizeMinRows="3"
+      cdkAutosizeMaxRows="8"
+    ></textarea>
+    <mat-error *ngIf="form.get('description')?.hasError('required')">
+      La descripción es obligatoria
+    </mat-error>
+  </mat-form-field>
+  <div mat-dialog-actions>
+    <div class="dialog-actions">
+      <button mat-flat-button color="warn">Cerrar</button>
+      <button mat-flat-button color="primary" [disabled]="form.invalid">
+        Guardar
+      </button>
+    </div>
+  </div>
+</form>

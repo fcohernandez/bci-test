@@ -1,0 +1,32 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 60px;
+  box-sizing: border-box; // Incluye el padding en el ancho total
+}
+
+.floating-action-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000; // Asegúrate de que el botón flote sobre otros elementos
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: 20px; // Reduce el padding en pantallas pequeñas
+  }
+}
+
+@media (max-width: 460px) {
+  .app-container {
+    align-items: center; // Centra los elementos horizontalmente
+  }
+}

@@ -1,0 +1,16 @@
+<div class="character-list-container">
+  <app-card
+    *ngFor="let character of favoriteCharacters"
+    [title]="character.name || 'Sin nombre'"
+    [iconImageUrl]="
+      character.images?.webp?.small_image_url ||
+      'https://material.angular.dev/assets/img/examples/shiba1.jpg'
+    "
+    [mainImageUrl]="
+      character.images?.webp?.image_url ||
+      'https://material.angular.dev/assets/img/examples/shiba1.jpg'
+    "
+    [onDelete]="removeCharacterFromFavorites.bind(this, character)"
+    [onEdit]="onEditCharacter.bind(this, character)"
+  ></app-card>
+</div>

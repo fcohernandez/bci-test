@@ -1,0 +1,46 @@
+<mat-card class="card">
+  <mat-card-header>
+    <div
+      mat-card-avatar
+      class="header-image"
+      [ngStyle]="{ 'background-image': 'url(' + iconImageUrl + ')' }"
+    ></div>
+    <mat-card-title>{{ title }}</mat-card-title>
+  </mat-card-header>
+  <img
+    mat-card-image
+    class="main-image"
+    [src]="mainImageUrl"
+    alt="character-photo"
+  />
+  <mat-card-actions class="card-actions">
+    <button
+      mat-fab
+      color="primary"
+      aria-label="edit-character"
+      (click)="onEdit()"
+      *ngIf="onEdit"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      mat-fab
+      matTooltip="Agregar a favoritos"
+      color="primary"
+      aria-label="edit-character"
+      (click)="onAdd()"
+      *ngIf="onAdd"
+    >
+      <mat-icon>favorite</mat-icon>
+    </button>
+    <button
+      mat-fab
+      color="warn"
+      aria-label="delete-character"
+      (click)="onDelete()"
+      *ngIf="onDelete"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>

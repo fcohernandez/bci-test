@@ -1,0 +1,10 @@
+<div class="character-list-container">
+  <app-card
+    *ngFor="let character of characters"
+    [title]="character.name"
+    [iconImageUrl]="character.images?.webp?.small_image_url"
+    [mainImageUrl]="character.images?.webp?.image_url"
+    [onAdd]="addCharacterToFavorites.bind(this, character)"
+  ></app-card>
+  <button mat-flat-button color="accent" (click)="loadCharacters(true)">Cargar más</button>
+</div>

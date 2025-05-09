@@ -1,18 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CharactersService } from '../characters.service';
 import { Character } from '../models/character.model';
 import { Pagination } from '../models/pagination.model';
-import { switchMap } from 'rxjs';
+import { Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-character-list',
   templateUrl: './character-list.component.html',
-  styleUrl: './character-list.component.scss',
+  styleUrls: ['./character-list.component.scss'],
 })
-export class CharacterListComponent implements OnInit {
+export class CharacterListComponent implements OnInit, OnDestroy {
   characters: Character[] = [];
   pagination: Pagination | null = null;
+  isLoading = false;
+  errorMessage: string | null = null;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private readonly _characterService: CharactersService,
@@ -20,6 +25,7 @@ export class CharacterListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Recupera la paginación desde el servicio
     this.pagination = this._characterService.getPagination();
 
     if (!this.characters.length) {
@@ -27,10 +33,21 @@ export class CharacterListComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadCharacters(addPage?: boolean): void {
-    if (addPage) {
-      this.pagination!.current_page++;
+    if (addPage && this.pagination?.has_next_page) {
+      this.pagination = {
+        ...this.pagination,
+        current_page: this.pagination.current_page + 1,
+      };
     }
+
+    this.isLoading = true;
+
     this._characterService
       .getCharacters(this.pagination)
       .pipe(
@@ -38,14 +55,20 @@ export class CharacterListComponent implements OnInit {
           this.pagination = response.pagination;
           this._characterService.setPagination(this.pagination!);
           return this._characterService.charactersCached$;
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe({
         next: (characters) => {
           this.characters = characters;
+          this.isLoading = false;
+          this.errorMessage = null;
         },
         error: (error) => {
           console.error('Error loading characters:', error);
+          this.isLoading = false;
+          this.errorMessage =
+            'Error loading characters. Please try again later.';
         },
       });
   }
@@ -55,6 +78,9 @@ export class CharacterListComponent implements OnInit {
       next: () => {
         console.log('Character added to favorites:', character);
         this.router.navigate(['/characters/favorites']);
+      },
+      error: (error) => {
+        console.error('Error adding character to favorites:', error);
       },
     });
   }
